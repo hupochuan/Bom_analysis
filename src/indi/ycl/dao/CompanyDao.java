@@ -20,7 +20,7 @@ public class CompanyDao {
 			// ps = con.prepareStatement("select id from company where
 			// z_bigclass in (3,7)");
 			ps = con.prepareStatement(
-					"select id from company where ctype in (1,8,9,14,18,19,21,22,29,30,31,39,40,41,44,47,48,49,51,55,56,63,66)");
+					"select id from company where ctype in (1,9,39,40)");
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				companys.add(rs.getInt("id"));

@@ -29,8 +29,9 @@ public class Ltp {
 				System.out.print("  ");
 			}
 		}
+
 		Segmentor.release();
-		
+
 		System.loadLibrary("postagger");// 词性标注，需要分词
 
 		if (Postagger.create("ltp_data_v3.4.0/pos.model") < 0) {
@@ -42,7 +43,7 @@ public class Ltp {
 		size = Postagger.postag(words, postags);
 
 		for (int i = 0; i < size; i++) {
-			System.out.print(words.get(i)+":"+postags.get(i));
+			System.out.print(words.get(i) + ":" + postags.get(i));
 
 			if (i == size - 1) {
 				System.out.println();
@@ -51,7 +52,7 @@ public class Ltp {
 			}
 		}
 		Postagger.release();
-		
+
 		System.loadLibrary("ner"); // 命名实体识别，需要分词、词性标注
 
 		if (NER.create("ltp_data_v3.4.0/ner.model") < 0) {
@@ -69,8 +70,9 @@ public class Ltp {
 		NER.release();
 
 	}
-	public static List<String> ltp_segmentor(String sentence){
-		
+
+	public static List<String> ltp_segmentor(String sentence) {
+
 		System.loadLibrary("segmentor");
 		if (Segmentor.create("ltp_data_v3.4.0/cws.model") < 0) {
 			System.err.println("load failed");
@@ -79,21 +81,22 @@ public class Ltp {
 		List<String> words = new ArrayList<String>();
 		int size = Segmentor.segment(sentence, words);
 
-//		for (int i = 0; i < size; i++) {
-//			System.out.print(words.get(i));
-//
-//			if (i == size - 1) {
-//				System.out.println();
-//			} else {
-//				System.out.print("  ");
-//			}
-//		}
-		
+		// for (int i = 0; i < size; i++) {
+		// System.out.print(words.get(i));
+		//
+		// if (i == size - 1) {
+		// System.out.println();
+		// } else {
+		// System.out.print(" ");
+		// }
+		// }
+
 		Segmentor.release();
 		return words;
-		
+
 	}
-	public static List<String> postagger(List<String> words){
+
+	public static List<String> postagger(List<String> words) {
 		System.loadLibrary("postagger");// 词性标注，需要分词
 
 		if (Postagger.create("ltp_data_v3.4.0/pos.model") < 0) {
@@ -104,20 +107,21 @@ public class Ltp {
 		List<String> postags = new ArrayList<String>();
 		int size = Postagger.postag(words, postags);
 
-//		for (int i = 0; i < size; i++) {
-//			System.out.print(postags.get(i));
-//
-//			if (i == size - 1) {
-//				System.out.println();
-//			} else {
-//				System.out.print(" ");
-//			}
-//		}
+		// for (int i = 0; i < size; i++) {
+		// System.out.print(postags.get(i));
+		//
+		// if (i == size - 1) {
+		// System.out.println();
+		// } else {
+		// System.out.print(" ");
+		// }
+		// }
 		Postagger.release();
 		return postags;
-		
+
 	}
-	public static List<String> ner(List<String> words,List<String> postags){
+
+	public static List<String> ner(List<String> words, List<String> postags) {
 		System.loadLibrary("ner"); // 命名实体识别，需要分词、词性标注
 
 		if (NER.create("ltp_data_v3.4.0/ner.model") < 0) {
@@ -135,7 +139,5 @@ public class Ltp {
 		NER.release();
 		return ners;
 	}
-	
-	
 
 }

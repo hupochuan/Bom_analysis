@@ -31,16 +31,13 @@ public class AnnualReportDao {
 			while (rs.next()) {
 
 				String content = rs.getString("content");
-                
-				qu = new Annual_Report();
-				qu.setCompany_id(rs.getInt("company_id"));
-				qu.setTitle(rs.getString("title"));
-
-				int startIndex = content.indexOf("第二节 公司简介和主要财务指标");
-				startIndex = content.indexOf("第二节 公司简介和主要财务指标", startIndex + 1);
+            
+                reports.add(rs.getString("title"));
+				int startIndex = content.indexOf("第三节 公司业务概要");
+				startIndex = content.indexOf("第三节 公司业务概要", startIndex + 1);
 				int endIndex = content.indexOf("第五节 重要事项");
 				endIndex = content.indexOf("第五节 重要事项", endIndex + 1);
-//				System.out.println(startIndex + " " + endIndex);
+				System.out.println(startIndex + " " + endIndex);
 				if(startIndex==-1||endIndex==-1){
 					return null;
 				}
@@ -181,6 +178,33 @@ public class AnnualReportDao {
 	public static void main(String[] args) {
 		new AnnualReportDao().getReportById(9103);
 
+	}
+	public String getReportTitleById(int id) {
+		// TODO Auto-generated method stub
+		String result="";
+		Connection con = null;
+		con = DbUtil.getCurrentConnection();
+		PreparedStatement ps;
+		try {
+			// ps = con.prepareStatement("select id from company where cindustry
+			// in (3,7)");
+			// ps = con.prepareStatement("select id from company where
+			// z_bigclass in (3,7)");
+			ps = con.prepareStatement(
+					"select title from creport where where id=?");
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				result=rs.getString("title");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			DbUtil.closeCurrentConnection();
+		}
+		
+		return result;
 	}
 
 }

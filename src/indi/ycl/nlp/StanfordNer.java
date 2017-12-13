@@ -61,13 +61,14 @@ public class StanfordNer {
 			
 		}
 	  }
+      System.out.println(wordtype.size());
       
       return wordtype;
 	}
 	
 
 	public static void main(String args[]) {
-		String str = "在 汽车 物流 自动化 装备 系统 领域 ， 本 公司 以 雄厚 的 技术 实力 和 良好 的 产品 质量 赢得 了 众多 整车厂 的 信赖 ， 客户 覆盖 了 大多数 主流 汽车 厂商 ， 特别 是 与 福特 汽车 公司 、 东风 汽车 公司 、 一汽 大众 汽车 有限公司 、 广州 本田 汽车 有限公司 、 一汽 轿车 股份 有限公司 、 广汽菲亚特 汽车 有限公司 等 知名 汽车 整车 厂商 建立 了 良好 稳定 的 业务 合作 关系 ； 在 商业 物流 系统 领域 ， 本 公司 服务 过 的 客户 有 白云 机场 、 耐克 （ 中国 ） 等 知名 企业 ； 在 散料 输送机 领域 ， 本 公司 的 客户 包括 了 宝钢 、 韶钢 等 大型 冶金 矿山 企业 ； 在 风电 产业 领域 ， 本 公司 与 西门子 、 阿尔斯通 、 GE 等 结成 了 战略 合作 关系 。";
+		String str = "客户 涵盖 了 包括 百 得 、 博 世 、 牧田 、 创科 等 在内 的 主要 电动 工具 厂商 。";
 		StanfordNer extractDemo = new StanfordNer();
 		System.out.println(extractDemo.doNer(str));
 		System.out.println(extractDemo.getNerList(str));

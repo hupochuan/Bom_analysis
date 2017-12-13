@@ -58,15 +58,19 @@ public class CRF {
 	}
 	
 	public static void main(String[] argv){
-		String read="如果公司不能及时把握改性塑料行业的发展趋势，加大对新产品的研究开发力度，以保持较高的技术研发水平，公司将在市场竞争中逐渐失去优势地位。";
+		System.out.println("faafafasd");
+		String read="此外，随着智能手机采用指纹识别技术渗透率的提高，公司利用现有手机客户资源，积极拓展移动终端指纹识别芯片封测方面的客户，进一步推动公司产业链向高附加值的中上游存储芯片封装测试产业链延伸，向封装测试等核心技术领域产业转型升级。2017年1月，公司新导入无人机和汽车电子业务，5月成立智能运通事业部，生产无人机和汽车电子相关产品，目前部分产品已进入批量生产阶段，客户认可度高，该领域有望导入更多行业领先的价值客户，为公司提供新的增长。公司的主要客户希捷缩减全球生产规模，关停其苏州工厂，公司的硬盘磁头及相关产品业务销售额也受到一定程度影响。公司主要业务包括计算机与存储、固态存储、通讯与消费电子、医疗产品、计量系统、商业与工业产品、自动化设备、触模屏以及半导体封测业务，在九大业务领域，为客户提供产品与服务。公司还投资了其它业务领域，主要涉猎的业务有，参股了开发晶照明（厦门）有限公司，布局LED业务，参股昂纳科技（集团）有限公司，涉足光通信业务领域，参股东莞捷荣技术股份有限公司，涉足专业精密塑胶、五金模具业务领域。无论在计算机存储产品、通讯产品，还是医疗产品等业务领域都能获得高端客户的一致认可；公司拥有完善的质量控制与持续改进系统，三十年来不断引入领先的管理理念和工具并积极实践，获得全面的产品和行业系统认证，并";
 		List<String> words=Ltp.ltp_segmentor(read);
+		System.out.println("faafafasd");
 		List<String> tags=Ltp.postagger(words);
+		System.out.println("faafafasd");
 		List<String> words1=new ArrayList<String>();
 		List<String> tags1=new ArrayList<String>(); 
+		System.out.println("faafafasd");
 		for (int i = 0; i < words.size(); i++) {
 			char[] chrs=words.get(i).toCharArray();
 			if(chrs.length==1){
-				System.out.println(words.get(i)+"	"+"S"+tags.get(i));
+				//System.out.println(words.get(i)+"	"+"S"+tags.get(i));
 				words1.add(""+words.get(i));
 				tags1.add("B"+tags.get(i));
 				
@@ -89,6 +93,7 @@ public class CRF {
 			}
 			
 		}
+		System.out.println("faafafasd");
 
 		new CRF().ProductNER(words1, tags1);
 		

@@ -1,7 +1,10 @@
 package indi.ycl.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +15,8 @@ public class CrfTransfor {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		SegmentTextTrans();
-//		LabeledTextTrans();
+//		SegmentTextTrans("D:/workspace/Bom_analysis/CRF/CRF++/test.data");
+//		LabeledTextTrans("C:/Users/ycl/Desktop/train.data");
 		
 	
 	}
@@ -70,12 +73,16 @@ public class CrfTransfor {
 		}
 	}
 	
-	public static void SegmentTextTrans() throws IOException{
+	public static void SegmentTextTrans(String path) throws IOException{
 		String result = null;
 		FileReader fileReader = null;
 		BufferedReader bufferedReader = null;
+		
+		File file = new File(path);
+		FileWriter fw = new FileWriter(file,true); 
+        BufferedWriter bw = new BufferedWriter(fw);
 		try {
-			fileReader = new FileReader("C:/Users/ycl/Desktop/test.txt");
+			fileReader = new FileReader("D:/workspace/Bom_analysis/filter.txt");
 			bufferedReader = new BufferedReader(fileReader);
 			try {
 				String read = null;
@@ -85,25 +92,30 @@ public class CrfTransfor {
 					for (int i = 0; i < words.size(); i++) {
 						char[] chrs=words.get(i).toCharArray();
 						if(chrs.length==1){
-							System.out.println(words.get(i)+"	"+"S"+tags.get(i));
+							//System.out.println(words.get(i)+"	"+"S"+tags.get(i));
+							bw.write(words.get(i)+"	"+"S"+tags.get(i)+"\r\n");
 						}else{
 							for (int j = 0; j < chrs.length; j++) {
 								if(j==0){
-									System.out.println(chrs[j]+"	"+"B"+tags.get(i));
+									bw.write(chrs[j]+"	"+"B"+tags.get(i)+"\r\n");
+									//System.out.println(chrs[j]+"	"+"B"+tags.get(i));
 								}else if (j==chrs.length-1) {
-									System.out.println(chrs[j]+"	"+"E"+tags.get(i));
+									bw.write(chrs[j]+"	"+"E"+tags.get(i)+"\r\n");
+									//System.out.println(chrs[j]+"	"+"E"+tags.get(i));
 								}else{
-									System.out.println(chrs[j]+"	"+"M"+tags.get(i));
+									bw.write(chrs[j]+"	"+"M"+tags.get(i)+"\r\n");
+//									System.out.println(chrs[j]+"	"+"M"+tags.get(i));
 								}
 							}
 						}
 						
 					}
-					System.out.println();
+					bw.write("\r\n");
 					
 						
 					   
 				}
+				bw.close(); fw.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -120,10 +132,16 @@ public class CrfTransfor {
 		
 	}
 	
-	public static void LabeledTextTrans() throws IOException{
+	public static void LabeledTextTrans(String path) throws IOException{
+		
 		String result = null;
 		FileReader fileReader = null;
 		BufferedReader bufferedReader = null;
+		
+		File file = new File(path);
+		FileWriter fw = new FileWriter(file,true); 
+        BufferedWriter bw = new BufferedWriter(fw);
+		 
 		try {
 			fileReader = new FileReader("C:/Users/ycl/Desktop/labeled.txt");
 			bufferedReader = new BufferedReader(fileReader);
@@ -179,10 +197,12 @@ public class CrfTransfor {
 							if(tag1){
 								if(type=='C'){
 									if(chr[i-1]=='>'){
-										System.out.println(chr[i]+"	"+wordtags.get(k)+" B_COMPANY");
+										bw.write(chr[i]+"	"+wordtags.get(k)+" B_COMPANY"+"\r\n");
+										//System.out.println(chr[i]+"	"+wordtags.get(k)+" B_COMPANY");
 										k++;
 									}else if((i+1)<chr.length&&chr[i+1]=='<'){
-										System.out.println(chr[i]+"	"+wordtags.get(k)+" E_COMPANY");
+										bw.write(chr[i]+"	"+wordtags.get(k)+" E_COMPANY"+"\r\n");
+										//System.out.println(chr[i]+"	"+wordtags.get(k)+" E_COMPANY");
 										k++;
 									}else{
 										System.out.println(chr[i]+"	"+wordtags.get(k)+" M_COMPANY");
@@ -191,20 +211,24 @@ public class CrfTransfor {
 									
 								}else{
 									if(chr[i-1]=='>'){
-										System.out.println(chr[i]+"	"+wordtags.get(k)+" B_PRODUCT");
+										bw.write(chr[i]+"	"+wordtags.get(k)+"	B_PRODUCT"+"\r\n");
+										//System.out.println(chr[i]+"	"+wordtags.get(k)+" B_PRODUCT");
 										k++;
 									}else if((i+1)<chr.length&&chr[i+1]=='<'){
-										System.out.println(chr[i]+"	"+wordtags.get(k)+" E_PRODUCT");
+										bw.write(chr[i]+"	"+wordtags.get(k)+"	E_PRODUCT"+"\r\n");
+										//System.out.println(chr[i]+"	"+wordtags.get(k)+" E_PRODUCT");
 										k++;
 									}else{
-										System.out.println(chr[i]+"	"+wordtags.get(k)+" M_PRODUCT");
+										bw.write(chr[i]+"	"+wordtags.get(k)+"	M_PRODUCT"+"\r\n");
+										//System.out.println(chr[i]+"	"+wordtags.get(k)+" M_PRODUCT");
 										k++;
 									}
 									
 								}
 								
 							}else{
-								System.out.println(chr[i]+"	"+wordtags.get(k)+" O");
+								bw.write(chr[i]+"	"+wordtags.get(k)+"	O"+"\r\n");
+//								System.out.println(chr[i]+"	"+wordtags.get(k)+" O");
 								k++;
 							}
 							
@@ -212,9 +236,11 @@ public class CrfTransfor {
 						}
 						
 					}
-					System.out.println();
+					bw.write("\r\n");
 					   
 				}
+				bw.close(); fw.close();
+	            System.out.println("done!");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -229,5 +255,6 @@ public class CrfTransfor {
 			}
 		}
 	}
+	
 
 }

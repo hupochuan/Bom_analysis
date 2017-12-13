@@ -15,35 +15,53 @@ public class GetLabelText {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//LabelText();
+//		LabelText();
 		SentenceFilter();
 
 	}
 
 	public static void LabelText() {
 		CompanyDao comdao=new CompanyDao();
-		ArrayList<Integer> companys=comdao.GetCompanyByIndustry();
-		AnnualReportDao dao = new AnnualReportDao();
-		StanfordNer ner=new StanfordNer();
-		StanfordSegmenter segmenter=new StanfordSegmenter();
+//		ArrayList<Integer> companys=comdao.GetCompanyByIndustry();
+		ArrayList<Integer> companys=new ArrayList<Integer>();
+		companys.add(42);
+		
+		AnnualReportDao dao = new AnnualReportDao();		
+//		StanfordSegmenter segmenter=new StanfordSegmenter();
+		StanfordNer ner =new StanfordNer();
+		GetEntity getentity=new GetEntity();
 		int i = 8517;
 		while (i <= 18172) {
+			
 			if (dao.ExistReport(i,companys)) {
+//				String title=dao.getReportTitleById(i);
+//				System.out.println(title);
+				ArrayList<String> coms=new ArrayList<String>();
+				ArrayList<String> pros=new ArrayList<String>();
 				ArrayList<String> sentence = dao.getReportById(i);
 				if (sentence != null) {
 					for (int j = 0; j < sentence.size(); j++) {
-//						List<String> segments = Ltp.ltp_segmentor(sentence.get(j));
-						List<String> segments = segmenter.doSegment(sentence.get(j));
-						String result=ner.doNer(listToString(segments,' '));
-					
-						if(result!=null){
-							FileOperation.writeToFile("D:/workspace/Bom_analysis/specific1.txt",result);
-							
+						System.out.println(sentence.get(j));
+						List<String> tmp1=getentity.GetCompanies(sentence.get(j),ner);
+						System.out.println(tmp1);
+						for (int k = 0; k < tmp1.size(); k++) {
+							coms.add(tmp1.get(k));
 						}
 						
+//						List<String> tmp2=GetEntity.GetProducts(sentence.get(j));
+//						
+//						for (int k = 0; k < tmp2.size(); k++) {
+//							pros.add(tmp2.get(k));
+//						}
+						
+						
+						
 
+					
 					}
 				}
+				System.out.println(coms);
+				System.out.println(pros);
 
 			}
 			i++;
@@ -61,7 +79,9 @@ public class GetLabelText {
 	}
 	public static void SentenceFilter() {
 		CompanyDao comdao=new CompanyDao();
-		ArrayList<Integer> companys=comdao.GetCompanyByIndustry();
+//		ArrayList<Integer> companys=comdao.GetCompanyByIndustry();
+		ArrayList<Integer> companys=new ArrayList<Integer>();
+		companys.add(42);companys.add(2334);companys.add(2961);
 		AnnualReportDao dao = new AnnualReportDao();
 		int i = 8517;
 		while (i <= 18172) {
@@ -69,15 +89,7 @@ public class GetLabelText {
 				ArrayList<String> sentence = dao.getReportById(i);
 				if (sentence != null) {
 					for (int j = 0; j < sentence.size(); j++) {
-						if(sentence.get(j).contains("产品")||sentence.get(j).contains("领域")||sentence.get(j).contains("服务")){
-							FileOperation.writeToFile("D:/workspace/Bom_analysis/filter.txt",sentence.get(j));
-						}
-					
-						
-							
-							
-						
-						
+							FileOperation.writeToFile("C:/Users/ycl/Desktop/年报句子.txt", sentence.get(j));
 
 					}
 				}
