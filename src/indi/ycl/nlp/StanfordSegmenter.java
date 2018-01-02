@@ -66,9 +66,13 @@ public class StanfordSegmenter {
   }
   public static void main(String[] args) throws Exception {
     StanfordSegmenter seg=new StanfordSegmenter();
-    String sample = "我住在美国。";
+    String sample = "目前公司服务的主要汽车客户有佛吉亚、高田、普利司通等。特斯拉、奥托立夫等知名客户已对本公司进行了供应商体系的认证，并已通过审核。";
     //seg.doSegment(sample);
-    System.out.println(seg.doSegment(sample));
+    List<String> result=seg.doSegment(sample);
+    for (int i = 0; i < result.size(); i++) {
+    	System.out.print(result.get(i)+"A");
+		
+	}
   }
 
 }

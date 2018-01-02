@@ -76,7 +76,6 @@ public class AnnualReportDao {
 							if (linenow.indexOf("。") > 0) {
 
 								if (linenow.charAt(linenow.length() - 1) == '。') {
-									//System.out.println("aaa" + prepart + linenow);
 									reports.add(prepart + linenow);
 									prepart = "";
 									findSenBegin = false;
@@ -86,7 +85,6 @@ public class AnnualReportDao {
 									for (int j = 0; j < tmp.length - 1; j++) {
 										prepart += tmp[j];
 									}
-									//System.out.println("aaa" + prepart + "。");
 									reports.add(prepart + "。");
 									prepart = tmp[tmp.length - 1];
 									findSenBegin = true;
@@ -112,7 +110,7 @@ public class AnnualReportDao {
 							if (linenow.indexOf("。") > 0) {
 
 								if (linenow.charAt(linenow.length() - 1) == '。') {
-									//System.out.println("aaa" + prepart + linenow);
+								
 									reports.add(prepart + linenow);
 									prepart = "";
 									findSenBegin = false;
@@ -122,7 +120,7 @@ public class AnnualReportDao {
 									for (int j = 0; j < tmp.length - 1; j++) {
 										prepart += tmp[j];
 									}
-									//System.out.println("aaa" + prepart + "。");
+									
 									reports.add(prepart + "。");
 									prepart = tmp[tmp.length - 1];
 								}

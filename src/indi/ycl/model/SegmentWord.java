@@ -4,6 +4,9 @@ public class SegmentWord {
 	private String word;
 	private String type;
 	private String ne;
+	
+	private int head;
+	private String deprel;
 	public String getWord() {
 		return word;
 	}
@@ -22,6 +25,23 @@ public class SegmentWord {
 	public void setNe(String ne) {
 		this.ne = ne;
 	}
+	public int getHead() {
+		return head;
+	}
+	public void setHead(int head) {
+		this.head = head;
+	}
+	public String getDeprel() {
+		return deprel;
+	}
+	public void setDeprel(String deprel) {
+		this.deprel = deprel;
+	}
+	@Override
+	public String toString() {
+		return "SegmentWord [word=" + word + ", type=" + type + ", ne=" + ne + ", head=" + head + ", deprel=" + deprel
+				+ "]";
+	}
 	
-
+	
 }

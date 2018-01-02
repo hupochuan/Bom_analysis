@@ -6,6 +6,9 @@ import java.util.List;
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.tokensregex.CoreMapSequenceMatchAction.AnnotateAction;
+import indi.ycl.dao.AnnualReportDao;
+import indi.ycl.model.SegmentWord;
 import indi.ycl.nlp.CRF;
 import indi.ycl.nlp.Ltp;
 import indi.ycl.nlp.StanfordNer;
@@ -17,10 +20,15 @@ public class GetEntity {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		String test = "客户 涵盖 了 包括 百 得 、 博 世 、 牧田 、 创科 等 在内 的 主要 电动 工具 厂商 。";
+//	    List<String> sentences=new AnnualReportDao().getReportById(9601);
+		List<String> sentences=new ArrayList<String>();
+		sentences.add("客户涵盖了包括百得、博世、 牧田、创科等在内的主要电动工具厂商。");
 		StanfordNer ner = new StanfordNer();
-		StanfordSegmenter segmenter = new StanfordSegmenter();
-		System.out.println(GetCompanies(test,ner,segmenter));
+	
+		for (int i = 0; i < sentences.size(); i++) {
+			System.out.println(GetCompanies(sentences.get(i),ner));
+		}
+		
 //		GetProducts(test);
 
 	}
@@ -28,23 +36,24 @@ public class GetEntity {
 
 
 	// 由于分词和命名实体识别初始化需要加载词典花费大量时间，所以只实例化一次
-	public  static List<String> GetCompanies(String sentence,StanfordNer ner,StanfordSegmenter segmenter) {
+	public  static List<String> GetCompanies(String sentence,StanfordNer ner) {
 
 		List<String> result = new ArrayList<String>();
-		List<String> segments=segmenter.doSegment(sentence);
-		List<String> tags = ner.getNerList(listToString(segments, ' ').trim());
+		List<SegmentWord> words=Ltp.getWordsList(sentence);
+		ner.getNerList(words);
 		Boolean isEnd = true;
 		String company = "";
-//		System.out.println(segments.size()+" "+segments);
-//		System.out.println(tags.size()+" "+tags);
-		for (int i = 0; i < tags.size(); i++) {
-			String tag = tags.get(i);
-			String word = segments.get(i);
+
+		//把前后两个同标注为组织名的词合并
+		for (int i = 0; i < words.size(); i++) {
+			
+			String tag = words.get(i).getNe();
+			String word = words.get(i).getWord();
 			if (tag.equals("ORGANIZATION")) {
 				if (company.equals("")) {
-					company = segments.get(i);
+					company = word;
 				} else {
-					company += segments.get(i);
+					company += word;
 
 				}
 
@@ -79,15 +88,12 @@ public class GetEntity {
 			} else {
 				for (int j = 0; j < chrs.length; j++) {
 					if (j == 0) {
-						// System.out.println(chrs[j]+" "+"B"+tags.get(i));
 						words1.add("" + chrs[j]);
 						tags1.add("B" + tags.get(i));
 					} else if (j == chrs.length - 1) {
-						// System.out.println(chrs[j]+" "+"E"+tags.get(i));
 						words1.add("" + chrs[j]);
 						tags1.add("E" + tags.get(i));
 					} else {
-						// System.out.println(chrs[j]+" "+"M"+tags.get(i));
 						words1.add("" + chrs[j]);
 						tags1.add("M" + tags.get(i));
 					}
@@ -177,17 +183,6 @@ public class GetEntity {
 
 	}
 
-	public static String listToString(List list, char separator) {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < list.size(); i++) {
-		
-				sb.append(list.get(i).toString().trim()).append(separator);
-		
-			
-		}
-		System.out.println("xx:"+sb.toString().substring(0, sb.toString().length() - 1));
-		return sb.toString().substring(0, sb.toString().length() - 1);
-	}
 
 	public static Boolean isWord(String tag1, String tag2) {
 
