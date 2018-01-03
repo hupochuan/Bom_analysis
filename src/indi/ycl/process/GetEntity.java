@@ -20,17 +20,12 @@ public class GetEntity {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-//	    List<String> sentences=new AnnualReportDao().getReportById(9601);
-		List<String> sentences=new ArrayList<String>();
-		sentences.add("客户涵盖了包括百得、博世、 牧田、创科等在内的主要电动工具厂商。");
+	    List<String> sentences=new AnnualReportDao().getReportById(9601);
 		StanfordNer ner = new StanfordNer();
 	
 		for (int i = 0; i < sentences.size(); i++) {
 			System.out.println(GetCompanies(sentences.get(i),ner));
 		}
-		
-//		GetProducts(test);
-
 	}
 
 
@@ -81,7 +76,6 @@ public class GetEntity {
 		for (int i = 0; i < words.size(); i++) {
 			char[] chrs = words.get(i).toCharArray();
 			if (chrs.length == 1) {
-				// System.out.println(words.get(i)+" "+"S"+tags.get(i));
 				words1.add("" + words.get(i));
 				tags1.add("B" + tags.get(i));
 

@@ -89,7 +89,7 @@ public class StanfordNer {
 			}
 
 		}
-		System.out.println(isCom);
+		//System.out.println(isCom);
 		if(isCom){
 			for (Integer i : nes) {
 				words.get(i).setNe("ORGANIZATION");
@@ -114,8 +114,6 @@ public class StanfordNer {
 		String str = " 《第五名客户》    涵盖  了  包括  百得  、  博世  、  牧田  、  创科  等  在内  的  主要  电动  工具  厂商  。";
 		StanfordNer extractDemo = new StanfordNer();
 		System.out.println(extractDemo.doNer(str));
-		// System.out.println(extractDemo.getNerList1(str));
-		// System.out.println(extractDemo.getNerList(str));
 		System.out.println("Complete!");
 	}
 
