@@ -21,10 +21,14 @@ public class GetEntity {
 		// TODO Auto-generated method stub
 		
 	    List<String> sentences=new AnnualReportDao().getReportById(9601);
-		StanfordNer ner = new StanfordNer();
+//		List<String> sentences=new ArrayList<String>();
+//	    sentences.add("汽车电子领域经过多年潜心耕耘，与东风日产、广汽本田、东风本田、众泰汽车、东风英菲尼迪、广汽乘用车、广汽三菱、东风启辰等前装车厂建立了稳固的合作关系，拥有一批稳定的核心客户群。");
+//		sentences.add("客户涵盖了包括百得、博世、 牧田、创科等在内的主要电动工具厂商。");
+	    StanfordNer ner = new StanfordNer();
 	
 		for (int i = 0; i < sentences.size(); i++) {
 			System.out.println(GetCompanies(sentences.get(i),ner));
+			System.out.println(GetProducts(sentences.get(i)));
 		}
 	}
 
@@ -68,112 +72,40 @@ public class GetEntity {
 	}
 
 	public  static List<String> GetProducts(String sentence) {
+		List<String> products=new ArrayList<String>();
 		List<String> result = new ArrayList<String>();
-		List<String> words = Ltp.ltp_segmentor(sentence);
-		List<String> tags = Ltp.postagger(words);
-		List<String> words1 = new ArrayList<String>();
-		List<String> tags1 = new ArrayList<String>();
+		List<SegmentWord> words=Ltp.getWordsList(sentence);
+	    CRF.ProductNER(words);
+		Boolean isEnd = true;
+		String company = "";
+
+		//把前后两个同标注为组织名的词合并
 		for (int i = 0; i < words.size(); i++) {
-			char[] chrs = words.get(i).toCharArray();
-			if (chrs.length == 1) {
-				words1.add("" + words.get(i));
-				tags1.add("B" + tags.get(i));
-
-			} else {
-				for (int j = 0; j < chrs.length; j++) {
-					if (j == 0) {
-						words1.add("" + chrs[j]);
-						tags1.add("B" + tags.get(i));
-					} else if (j == chrs.length - 1) {
-						words1.add("" + chrs[j]);
-						tags1.add("E" + tags.get(i));
-					} else {
-						words1.add("" + chrs[j]);
-						tags1.add("M" + tags.get(i));
-					}
-				}
-			}
-
-		}
-
-		List<String> labelchrs = new CRF().ProductNER(words1, tags1);
-		if (labelchrs.size() == 0) {
-			return null;
-		}
-		// 根据前后文的标注对O重新进行标注
-		int i = 0;
-		Boolean findpro = false, findtail = false;
-		int head = -1, tail = -1, pretail = -1;
-		String[] filter = new String[] { "wp", "u", "p", "nl", "q" };
-		while (i < labelchrs.size()) {	
 			
-			String label = labelchrs.get(i);
-			String tag = tags1.get(i);
-			//System.out.println(words1.get(i)+" "+label);
-			
-			if (!findpro) {
-				if (label.equals("B_PRODUCT")) {
-					findpro = true;
-					head = i;
-				} else if (label.equals("M_PRODUCT")) {
-				  
-					int j = i - 1;
-					while (j >= (pretail > 0 ? pretail : 0)) {
-
-						// 获取ltp标注的词性
-						String l = tags1.get(j);
-						String cixing = l.substring(1, l.length());
-						// 判断词性，若不可能出现在产品名中，break
-						if (cixing.equals("wp") || cixing.equals("u") || cixing.equals("p") || cixing.equals("nl")
-								|| cixing.equals("q") || cixing.equals("d") || cixing.equals("nd")
-								|| cixing.equals("ws") || cixing.equals("r")) {
-							findpro = true;
-							head = j + 1;
-							break;
-
-						}else if(l.equals("Ea")){
-							findpro = true;
-							head=j+1;
-							break;
-						}
-						j--;
-					}
-					
-					
-
+			String tag = words.get(i).getNe();
+			String word = words.get(i).getWord();
+			if (tag.equals("PRODUCT")) {
+				if (company.equals("")) {
+					company = word;
 				} else {
+					company += word;
 
 				}
-				
 
 			} else {
-				String cixing1 = tag.substring(1, tag.length());
-
-				if (label.equals("E_PRODUCT")) {
-					findpro=false;
-					tail = i + 1;
-					result.add(sentence.substring(head, tail));
-					System.out.println(sentence.substring(head, tail));
-				} else if (cixing1.equals("wp")||cixing1.equals("u")||cixing1.equals("p")||cixing1.equals("m")||cixing1.equals("a")) {
-					findpro=false;
-					tail = i;
-					result.add(sentence.substring(head, tail));
-					System.out.println(sentence.substring(head, tail));
-					
-
-				}else if(cixing1.equals("u")){
-					
+				if (company.equals("")) {
+					continue;
+				} else {
+					result.add(company);
+					company = "";
 				}
-				
-				
+
 			}
-
-			i++;
-			
-
 		}
-
+		
 		return result;
+		
+		
 
 	}
 

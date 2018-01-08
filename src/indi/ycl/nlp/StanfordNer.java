@@ -62,45 +62,66 @@ public class StanfordNer {
 		for (int i = 0; i < segs.length; i++) {
 			String string = segs[i];
 			int fenge = string.lastIndexOf("/");
-			words.get(i).setNe(string.substring(fenge + 1, string.length()));
-
+			if (words.get(i).getNe().equals("O")) {
+				words.get(i).setNe(string.substring(fenge + 1, string.length()));
+			}
 		}
+
 		SegmentWord word;
 		List<Integer> nes = new ArrayList<Integer>();
 		Boolean isCom = false;
-		// 处理句法依赖中的并列关系，句子中包含多个词并列的情况下，若有一个识别为公司名，则其他并列词也为公司名
-		for (int i = 0; i < words.size(); i++) {
+		// 增加 规则1：具备并列关系的多个词具备相同的实体类别；
+		for (int i = 0; i < words.size(); i++) { // 处理句法依赖中的并列关系，句子中包含多个词并列的情况下，若有一个识别为公司名，则其他并列词也为公司名
 			word = words.get(i);
 			if (word.getDeprel().equals("COO")) {
-				if (nes.isEmpty()) {
+				if (nes.isEmpty()) { // 找到一组COO关系的头
 					nes.add(i);
 					nes.add(word.getHead());
 					if (word.getNe().equals("ORGANIZATION") || words.get(word.getHead()).getNe().equals("ORGANIZATION"))
 						isCom = true;
 				} else {
-					if (nes.contains(word.getHead())){
+					if (nes.contains(word.getHead())) { // 后续出现的COO关系是否跟之前的是同一组
 						nes.add(i);
 						if (word.getNe().equals("ORGANIZATION"))
-							isCom=true;
-						
+							isCom = true;
+					} else {
+						//System.out.println(nes);
+						if (isCom) {
+							for (Integer index : nes) {
+								words.get(index).setNe("ORGANIZATION");
+							}
+						}
+						isCom = false;
+						nes.clear();
+						i--;
 					}
-						
 				}
 			}
+		}
+		if (!nes.isEmpty() && isCom)
 
-		}
-		//System.out.println(isCom);
-		if(isCom){
-			for (Integer i : nes) {
-				words.get(i).setNe("ORGANIZATION");
+			for (Integer index : nes) {
+				words.get(index).setNe("ORGANIZATION");
 			}
-		}
+
+		// 规则2：具备ATT（定中关系）的相邻词，如果其中一个词为公司名，那么另外一个也是公司名。
+		//除了ATT，RAD(右附加)似乎也具备相同的性质，在经过测试后再进行改进
+		for (int i = 0; i < words.size(); i++) {
 			
+			word=words.get(i);
+			//方法一 只考虑公司名上下相邻词。另外还可以进行关系的判断，例如 COO-ATT关系
+			if(word.getNe().equals("ORGANIZATION")){
+				if(i+1<words.size()&&word.getDeprel().equals("ATT")&&word.getHead()==i+1)
+					words.get(i+1).setNe("ORGANIZATION");
+				if(i-1>=0&&words.get(i-1).getDeprel().equals("ATT")&&words.get(i-1).getHead()==i)
+					words.get(i-1).setNe("ORGANIZATION");
+			}
+				
+		}
 
 	}
 
 	public static String listToString(List<SegmentWord> list, char separator) {
-		System.out.println(list.size());
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < list.size(); i++) {
 
@@ -111,7 +132,8 @@ public class StanfordNer {
 	}
 
 	public static void main(String args[]) {
-		String str = " 《第五名客户》    涵盖  了  包括  百得  、  博世  、  牧田  、  创科  等  在内  的  主要  电动  工具  厂商  。";
+		String str = "汽车电子领域经过多年潜心耕耘，与东风日产、广汽本田、东风本田、众泰汽车、东风英菲尼迪、广汽乘用车、广汽三菱、东风启辰等前装车厂建立了稳固的合作关系，拥有一批稳定的核心客户群。";
+
 		StanfordNer extractDemo = new StanfordNer();
 		System.out.println(extractDemo.doNer(str));
 		System.out.println("Complete!");

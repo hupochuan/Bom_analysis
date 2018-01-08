@@ -119,6 +119,7 @@ public class Ltp {
 			word.setType(tags.get(i));
 			word.setHead(heads.get(i) - 1);// 保存的是数组下标
 			word.setDeprel(deprels.get(i));
+			word.setNe("O");
 //			System.out.print(heads.get(i)-1 + ":" + deprels.get(i));
 			result.add(word);
 		}
@@ -140,6 +141,8 @@ public class Ltp {
 		}
 		return sb.toString().substring(0, sb.toString().length() - 1);
 	}
+	
+	
 	
 	
 

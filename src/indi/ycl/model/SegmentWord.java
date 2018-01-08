@@ -3,7 +3,7 @@ package indi.ycl.model;
 public class SegmentWord {
 	private String word;
 	private String type;
-	private String ne;
+	private String ne;//ORGANIZATION公司名 PRODUCT产品名 O其他
 	
 	private int head;
 	private String deprel;
