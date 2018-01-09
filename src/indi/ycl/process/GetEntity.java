@@ -9,6 +9,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.tokensregex.CoreMapSequenceMatchAction.AnnotateAction;
 import indi.ycl.dao.AnnualReportDao;
 import indi.ycl.model.SegmentWord;
+import indi.ycl.model.Sentence;
 import indi.ycl.nlp.CRF;
 import indi.ycl.nlp.Ltp;
 import indi.ycl.nlp.StanfordNer;
@@ -20,16 +21,21 @@ public class GetEntity {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-	    List<String> sentences=new AnnualReportDao().getReportById(9601);
-//		List<String> sentences=new ArrayList<String>();
-//	    sentences.add("汽车电子领域经过多年潜心耕耘，与东风日产、广汽本田、东风本田、众泰汽车、东风英菲尼迪、广汽乘用车、广汽三菱、东风启辰等前装车厂建立了稳固的合作关系，拥有一批稳定的核心客户群。");
+//	    List<String> sentences=new AnnualReportDao().getReportById(9601);
+		List<String> sentences=new ArrayList<String>();
+	    sentences.add("LCM、触控业务加大对研发的投入力度，重点客户推进有力，集约化管理进步明显，年内拓展了小米、OPPO等新客户。");
 //		sentences.add("客户涵盖了包括百得、博世、 牧田、创科等在内的主要电动工具厂商。");
 	    StanfordNer ner = new StanfordNer();
 	
 		for (int i = 0; i < sentences.size(); i++) {
-			System.out.println(GetCompanies(sentences.get(i),ner));
+			Sentence sent=new Sentence();
+			sent.setContent(sentences.get(i));
+			sent.setWords(Ltp.getWordsList(sentences.get(i)));
+			
+			System.out.println(GetCompanies(sent,ner));
 			System.out.println(GetProducts(sentences.get(i)));
 		}
+		
 	}
 
 
