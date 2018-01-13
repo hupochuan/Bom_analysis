@@ -77,6 +77,8 @@ public class StanfordNer {
 			Sentence.dealCoo(words, "ORGANIZATION");
 			// 规则2：具备ATT（定中关系）的相邻词，如果其中一个词为公司名，那么另外一个也是公司名。
 			Sentence.dealATT(words, "ORGANIZATION");
+			
+			Sentence.dealVOB(words, "ORGANIZATION");
 		}
 
 		// 除了ATT，RAD(右附加)似乎也具备相同的性质，在经过测试后再进行改进

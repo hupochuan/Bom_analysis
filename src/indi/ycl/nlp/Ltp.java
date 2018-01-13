@@ -120,12 +120,8 @@ public class Ltp {
 			word.setHead(heads.get(i) - 1);// 保存的是数组下标
 			word.setDeprel(deprels.get(i));
 			word.setNe("O");
-//			System.out.print(heads.get(i)-1 + ":" + deprels.get(i));
 			result.add(word);
 		}
-//		System.out.println(words);
-//		System.out.println(heads);
-//		System.out.println(deprels);
 
 		Parser.release();
 		return result;
@@ -141,6 +137,73 @@ public class Ltp {
 		}
 		return sb.toString().substring(0, sb.toString().length() - 1);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

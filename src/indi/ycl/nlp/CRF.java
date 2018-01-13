@@ -8,6 +8,68 @@ import indi.ycl.model.SegmentWord;
 import indi.ycl.model.Sentence;
 
 public class CRF {
+	
+	public static void LabelSent(Sentence sentence,String path){
+		
+		List<SegmentWord> words = sentence.getWords();
+		List<String> segments = new ArrayList<String>();
+		List<String> tags = new ArrayList<String>();
+
+		for (int i = 0; i < words.size(); i++) {
+
+			String word = words.get(i).getWord();
+			String tag = words.get(i).getType();
+			char[] chrs = word.toCharArray();
+			if (chrs.length == 1) {
+				segments.add("" + word);
+				tags.add("B" + tag);
+
+			} else {
+				for (int j = 0; j < chrs.length; j++) {
+					if (j == 0) {
+						segments.add("" + chrs[j]);
+						tags.add("B" + tag);
+					} else if (j == chrs.length - 1) {
+						segments.add("" + chrs[j]);
+						tags.add("E" + tag);
+					} else {
+						segments.add("" + chrs[j]);
+						tags.add("M" + tag);
+					}
+				}
+			}
+
+		}
+		Tagger tagger_B = new Tagger("-m "+path);
+		
+		for (int i = 0; i < segments.size(); i++) {
+			tagger_B.add(segments.get(i) + " " + tags.get(i));
+		}
+		tagger_B.parse();
+		
+//		CRF.toString(tagger_B);
+
+		// 遍历tagger，如果某词中的某个字被标记为PRODUCT，那么这个词的NE为PRODUCT
+		int cnt = 0;
+		int l = 0;
+		SegmentWord word;
+		sentence.setHasPro(false);
+
+		for (int i = 0; i < words.size(); i++) {
+			word = words.get(i);
+			l = word.getWord().length();
+			for (int j = cnt; j < cnt + l; j++) {
+		
+				if (!tagger_B.y2(j).equals("O")) { //如果之前识别出为公司名或产品名，不能对其
+					word.setNe("PRODUCT");
+					sentence.setHasPro(true);
+					break;
+				}
+			}
+			cnt += l;
+		}
+		
+	}
 
 	public static void ProductNER(Sentence sentence) {
 
@@ -48,7 +110,7 @@ public class CRF {
 		}
 		tagger_B.parse();
 		
-		CRF.toString(tagger_B);
+//		CRF.toString(tagger_B);
 
 		// 遍历tagger，如果某词中的某个字被标记为PRODUCT，那么这个词的NE为PRODUCT
 		int cnt = 0;
@@ -60,8 +122,8 @@ public class CRF {
 			word = words.get(i);
 			l = word.getWord().length();
 			for (int j = cnt; j < cnt + l; j++) {
-				// System.out.println(tagger_B.y2(j));
-				if (!tagger_B.y2(j).equals("O")) {
+		
+				if (!tagger_B.y2(j).equals("O")) { //如果之前识别出为公司名或产品名，不能对其
 					word.setNe("PRODUCT");
 					sentence.setHasPro(true);
 					break;
@@ -69,22 +131,25 @@ public class CRF {
 			}
 			cnt += l;
 		}
+        tagger_B.delete();
 
-		// 如果B模板找不到产品，用U模板进行预测
+		// 如果B模板找不到产品，用U模板进行预测 
 		if (!sentence.getHasPro()) {
+			
 			Tagger tagger_U = new Tagger("-m D:/workspace/Bom_analysis/CRF/CRF++/model1");
 			for (int i = 0; i < segments.size(); i++) {
 				tagger_U.add(segments.get(i) + " " + tags.get(i));
 			}
 			tagger_U.parse();
-			CRF.toString(tagger_U);
-
+//			CRF.toString(tagger_U);
+            
+			cnt=0; //初始化统计量
+			l=0; 
 			for (int i = 0; i < words.size(); i++) {
 				word = words.get(i);
 				l = word.getWord().length();
 				for (int j = cnt; j < cnt + l; j++) {
-				
-					if (!tagger_U.y2(j).equals("O")) {
+					if (!tagger_U.y2(j).equals("O")&&word.getNe().equals("O")) {
 						word.setNe("PRODUCT");
 						sentence.setHasPro(true);
 						break;
@@ -102,6 +167,7 @@ public class CRF {
 		if (sentence.getHasPro()) {
 			Sentence.dealCoo(words, "PRODUCT");
 			Sentence.dealATT(words, "PRODUCT");
+			Sentence.dealVOB(words, "PRODUCT");
 		}
 
 	}
@@ -113,9 +179,7 @@ public class CRF {
 				System.out.print(tagger.x(i, j) + "\t");
 			}
 			System.out.print(tagger.y2(i) + "\t");
-
 			System.out.print("\n");
-
 		}
 	}
 

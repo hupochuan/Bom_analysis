@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sentence {
-	String content;
-	Boolean hasCom;
-	Boolean hasPro;
-	List<SegmentWord> words;
+	String content; //原文
+	Boolean hasCom; //是否包含公司名
+	Boolean hasPro; //是否包含产品名
+	List<SegmentWord> words; //分词、词性、句法依赖
 
 	public String getContent() {
 		return content;
@@ -96,5 +96,36 @@ public class Sentence {
 
 		}
 	}
+	
+	public static void dealVOB(List<SegmentWord> words, String ne) {
+		SegmentWord word = new SegmentWord();
+		for (int i = 0; i < words.size(); i++) {
+
+			word = words.get(i);
+			// 方法一 只考虑公司名上下相邻词。另外还可以进行关系的判断，例如 COO-ATT关系
+			if (word.getNe().equals(ne)) {
+				if (i + 1 < words.size() && words.get(i+1).getDeprel().equals("VOB") && words.get(i+1).getHead() == i)
+					words.get(i + 1).setNe(ne);
+		
+			}
+
+		}
+	}
+	
+	public static void dealRAD(List<SegmentWord> words, String ne) { //右附加关系
+		SegmentWord word = new SegmentWord();
+		for (int i = 0; i < words.size(); i++) {
+
+			word = words.get(i);
+			// 方法一 只考虑公司名上下相邻词。另外还可以进行关系的判断，例如 COO-ATT关系
+			if (word.getNe().equals(ne)) {
+				if (i + 1 < words.size() && words.get(i+1).getDeprel().equals("RAD") && words.get(i+1).getHead() == i)
+					words.get(i + 1).setNe(ne);
+		
+			}
+
+		}
+	}
+
 
 }
