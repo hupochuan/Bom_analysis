@@ -38,7 +38,11 @@ public class GetEntity {
 			sent.setWords(Ltp.getWordsList(sentences.get(i)));
 
 			System.out.println(GetCompanies(sent, ner));
+			System.out.println(sent.getCom_groups());
+			
 			System.out.println(GetProducts(sent));
+			System.out.println(sent.getPro_groups());
+			
 		}
 
 	}

@@ -74,11 +74,11 @@ public class StanfordNer {
 
 		if (sentence.getHasCom()) {
 			// 增加 规则1：具备并列关系的多个词具备相同的实体类别；
-			Sentence.dealCoo(words, "ORGANIZATION");
+			Sentence.dealCoo(words, sentence.getCom_groups(), "ORGANIZATION");
 			// 规则2：具备ATT（定中关系）的相邻词，如果其中一个词为公司名，那么另外一个也是公司名。
-			Sentence.dealATT(words, "ORGANIZATION");
-			
-			Sentence.dealVOB(words, "ORGANIZATION");
+			Sentence.dealATT(words, sentence.getCom_groups(), "ORGANIZATION");
+
+			Sentence.dealVOB(words, sentence.getCom_groups(), "ORGANIZATION");
 		}
 
 		// 除了ATT，RAD(右附加)似乎也具备相同的性质，在经过测试后再进行改进
