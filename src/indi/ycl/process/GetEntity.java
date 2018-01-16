@@ -10,6 +10,7 @@ import edu.stanford.nlp.ling.tokensregex.CoreMapSequenceMatchAction.AnnotateActi
 import indi.ycl.dao.AnnualReportDao;
 import indi.ycl.model.SegmentWord;
 import indi.ycl.model.Sentence;
+import indi.ycl.model.SupplyRelation;
 import indi.ycl.nlp.CRF;
 import indi.ycl.nlp.Ltp;
 import indi.ycl.nlp.StanfordNer;
@@ -28,20 +29,32 @@ public class GetEntity {
 		sentences.add("目前公司已拥有LED封装、LED背光、触控面板、模组贴合、结构件的全产业链完整产能，拥有联想、JDI、小米、华为等行业知名客户以及具备一定技术基础的研发团队。");
 		sentences.add("得益于公司的市场布局及大客户战略，伴随着OPPO、VIVO、华为等客户市场份额的增长，2016年公司在金属外观件等产品领域取得了高速的增长。");
 		sentences.add("京东方已成为半导体显示领域世界顶级供货商，与包括三星、LG、海信、康佳、联想、戴尔、惠普等在内的国内外知名客户保持了长期、可持续的合作，是众多国际一线品牌的第一供应商。");
-		sentences.add(
-				"车辆减震产品获得了华晨汽车等工厂认可并获得整车悬置件的订单，并有十多个车型的减震产品正在开发研制，汽车密封件整车业务全面推进，并逐步进入上汽荣威、上汽大通、一汽轿车、一汽大众、广汽三菱、北汽及新能源车的整车密封供系统， 为公司的持续发展打下了坚实基础。");
+		sentences.add("车辆减震产品获得了华晨汽车等工厂认可并获得整车悬置件的订单，并有十多个车型的减震产品正在开发研制，汽车密封件整车业务全面推进，并逐步进入上汽荣威、上汽大通、一汽轿车、一汽大众、广汽三菱、北汽及新能源车的整车密封供系统， 为公司的持续发展打下了坚实基础。");
 		StanfordNer ner = new StanfordNer();
 
 		for (int i = 0; i < sentences.size(); i++) {
 			Sentence sent = new Sentence();
 			sent.setContent(sentences.get(i));
 			sent.setWords(Ltp.getWordsList(sentences.get(i)));
-
 			System.out.println(GetCompanies(sent, ner));
-			System.out.println(sent.getCom_groups());
-			
 			System.out.println(GetProducts(sent));
-			System.out.println(sent.getPro_groups());
+			List<SupplyRelation> re1=new ArrayList<SupplyRelation>();
+			List<SupplyRelation> re2=new ArrayList<SupplyRelation>();
+		    if(sent.getHasCom()&&sent.getHasPro()){
+		    	re1=GetSupplyRelation.extractSupplyRelation(sent, "测试公司");
+		    	for (int j = 0; j < re1.size(); j++) {
+		    		SupplyRelation out=re1.get(j);
+		    		System.out.println(out.getClient()+" "+out.getCompany()+" "+out.getProduct());
+				}
+		    }
+		    if(sent.getHasCom()&&!sent.getHasPro()){
+		    	re2=GetSupplyRelation.extractClient(sent, "测试公司");
+		    	for (int j = 0; j < re2.size(); j++) {
+		    		SupplyRelation out=re2.get(j);
+		    		System.out.println(out.getClient()+" "+out.getCompany());
+				}
+		    	
+		    }
 			
 		}
 

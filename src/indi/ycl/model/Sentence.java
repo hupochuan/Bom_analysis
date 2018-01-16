@@ -72,7 +72,9 @@ public class Sentence {
 		SegmentWord word = new SegmentWord();
 		for (int i = 0; i < words.size(); i++) { // 处理句法依赖中的并列关系，句子中包含多个词并列的情况下，若有一个识别为公司名，则其他并列词也为公司名
 			word = words.get(i);
+//			System.out.println(word.getDeprel());
 			if (word.getDeprel().equals("COO")) {
+				
 				if (nes.isEmpty()) { // 找到一组COO关系的头
 					nes.add(i);
 					nes.add(word.getHead());
@@ -126,7 +128,7 @@ public class Sentence {
 			word = words.get(i);
 			// 方法一 只考虑公司名上下相邻词。另外还可以进行关系的判断，例如 COO-ATT关系
 			if (word.getNe().equals(ne)) {
-				int group = 0; // 先初始化成0，并不合适
+				int group = -1; // 先初始化成0，并不合适
 				// 判断当前word属于哪一个并列组
 				for (int j = 0; j < groups.size(); j++) {
 					if (groups.get(j).contains(i)) {
@@ -136,14 +138,14 @@ public class Sentence {
 				}
 				if (i + 1 < words.size() && word.getDeprel().equals("ATT") && word.getHead() == i + 1) {
 					words.get(i + 1).setNe(ne);
-					if (groups.size() != 0) {
+					if (group != -1) {
 						groups.get(group).add(i + 1);
 					}
 
 				}
 				if (i - 1 >= 0 && words.get(i - 1).getDeprel().equals("ATT") && words.get(i - 1).getHead() == i) {
 					words.get(i - 1).setNe(ne);
-					if (groups.size() != 0) {
+					if (group != -1) {
 						groups.get(group).add(i - 1);
 					}
 				}
@@ -160,7 +162,7 @@ public class Sentence {
 			word = words.get(i);
 			// 方法一 只考虑公司名上下相邻词。另外还可以进行关系的判断，例如 COO-ATT关系
 			if (word.getNe().equals(ne)) {
-				int group = 0; // 先初始化成0，并不合适
+				int group = -1; // 先初始化成0，并不合适
 				// 判断当前word属于哪一个并列组
 				for (int j = 0; j < groups.size(); j++) {
 					if (groups.get(j).contains(i)) {
@@ -171,7 +173,7 @@ public class Sentence {
 				if (i + 1 < words.size() && words.get(i + 1).getDeprel().equals("VOB")
 						&& words.get(i + 1).getHead() == i) {
 					words.get(i + 1).setNe(ne);
-					if (groups.size() != 0) {
+					if (group!= -1) {
 						groups.get(group).add(i + 1);
 					}
 				}
@@ -188,7 +190,7 @@ public class Sentence {
 			word = words.get(i);
 			// 方法一 只考虑公司名上下相邻词。另外还可以进行关系的判断，例如 COO-ATT关系
 			if (word.getNe().equals(ne)) {
-				int group = 0; // 先初始化成0，并不合适
+				int group = -1; // 先初始化成0，并不合适
 				// 判断当前word属于哪一个并列组
 				for (int j = 0; j < groups.size(); j++) {
 					if (groups.get(j).contains(i)) {
@@ -199,7 +201,7 @@ public class Sentence {
 				if (i + 1 < words.size() && words.get(i + 1).getDeprel().equals("RAD")
 						&& words.get(i + 1).getHead() == i) {
 					words.get(i + 1).setNe(ne);
-					if (groups.size() != 0) {
+					if (group!= -1) {
 						groups.get(group).add(i + 1);
 					}
 				}
