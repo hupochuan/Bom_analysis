@@ -22,7 +22,7 @@ public class AnnualReportDao {
 
 		try {
 
-			ps = con.prepareStatement("select * from creport where id=?");
+			ps = con.prepareStatement("select * from reports where id=?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 
@@ -146,19 +146,21 @@ public class AnnualReportDao {
 
 	}
 
-	public boolean ExistReport(int id, ArrayList<Integer> companys) {
-		boolean flag = false;
+	public Integer ExistReport(int id, ArrayList<Integer> companys) {
+//		boolean flag = false;
+		Integer re=null;
 		Connection con = null;
 		con = DbUtil.getCurrentConnection();
 		PreparedStatement ps;
 		try {
-			ps = con.prepareStatement("select * from creport where id=?");
+			ps = con.prepareStatement("select * from reports where id=?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
+				int company=rs.getInt("company_id");
 
-				if (companys.contains(rs.getInt("company_id"))) {
-					flag = true;
+				if (companys.contains(company)) {
+					re=company;
 				}
 			}
 		} catch (SQLException e) {
@@ -167,7 +169,7 @@ public class AnnualReportDao {
 		} finally {
 			DbUtil.closeCurrentConnection();
 		}
-		return flag;
+		return re;
 	}
 
 	public static void main(String[] args) {
@@ -186,7 +188,7 @@ public class AnnualReportDao {
 			// in (3,7)");
 			// ps = con.prepareStatement("select id from company where
 			// z_bigclass in (3,7)");
-			ps = con.prepareStatement("select title from creport where where id=?");
+			ps = con.prepareStatement("select title from reports where where id=?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {

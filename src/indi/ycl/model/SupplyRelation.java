@@ -6,6 +6,7 @@ public class SupplyRelation {
 	private String client;
 	private String product;
 	private int type; //1是完整的供应关系；2是只包含客户公司名的供应关系
+	private int confidence_level;
 	
 	public String getCompany() {
 		return company;
@@ -42,5 +43,12 @@ public class SupplyRelation {
 	public SupplyRelation(){
 		
 	}
+	public int getConfidence_level() {
+		return confidence_level;
+	}
+	public void setConfidence_level(int confidence_level) {
+		this.confidence_level = confidence_level;
+	}
+	
 
 }
