@@ -110,7 +110,7 @@ public class CRF {
 		}
 		tagger_B.parse();
 
-		// CRF.toString(tagger_B);
+		 CRF.toString(tagger_B);
 
 		// 遍历tagger，如果某词中的某个字被标记为PRODUCT，那么这个词的NE为PRODUCT
 		int cnt = 0;
@@ -141,7 +141,7 @@ public class CRF {
 				tagger_U.add(segments.get(i) + " " + tags.get(i));
 			}
 			tagger_U.parse();
-			// CRF.toString(tagger_U);
+			 CRF.toString(tagger_U);
 
 			cnt = 0; // 初始化统计量
 			l = 0;
@@ -157,6 +157,7 @@ public class CRF {
 				}
 				cnt += l;
 			}
+			CRF.toString(tagger_U);
 //		}
 
 		// 最后利用
@@ -184,8 +185,13 @@ public class CRF {
 	}
 
 	public static void main(String[] argv) {
-		String test = "公司半导体功率器件产品主要包括高压超结MOSFET、IGBT、IGTO等先进半导体功率器件以及相关的电源管理集成电路等产品，可以广泛应用于节能、绿色照明、风力发电、智能电网、混合动力/电动汽车、仪器仪表、消费电子等领域。";
-
+		String test = "上海大众车用空调是上海德尔福汽车空调系统"
++"有限公司,一汽大众的空调是长春一汽杰克赛尔空调有限公司，广汽的空调是广州电装空调有限公司，神龙的空调是法雷奥"
++"汽车空调湖北有限公司，东风的空调是德国贝尔公司。";
+		Sentence sent = new Sentence();
+		sent.setContent(test);
+		sent.setWords(Ltp.getWordsList(test));
+		CRF.ProductNER(sent);
 	}
 
 }

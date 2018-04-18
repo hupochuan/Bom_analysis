@@ -12,7 +12,7 @@ import indi.ycl.model.Annual_Report;
 import indi.ycl.util.CountChar;
 
 public class AnnualReportDao {
-	public ArrayList<String> getReportById(int id) {
+	public static ArrayList<String> getReportById(int id) {
 		ArrayList<String> reports = new ArrayList<String>();
 
 		Connection con = null;
@@ -36,7 +36,7 @@ public class AnnualReportDao {
 				int endIndex = content.indexOf("第五节 重要事项");
 				endIndex = content.indexOf("第五节 重要事项", endIndex + 1);
 				System.out.println(startIndex + " " + endIndex);
-				if (startIndex == -1 || endIndex == -1) {
+				if (startIndex <0 || endIndex <0) {
 					return null;
 				}
 				content = content.substring(startIndex, endIndex);
@@ -44,7 +44,6 @@ public class AnnualReportDao {
 				String[] splitresult = content.split("\n");
 				ArrayList<String> sentence = new ArrayList<String>();
 				for (int i = 0; i < splitresult.length; i++) {
-
 					if (splitresult[i].length() > 1) {
 						sentence.add(splitresult[i].substring(0, splitresult[i].length() - 1));
 					}
@@ -146,7 +145,7 @@ public class AnnualReportDao {
 
 	}
 
-	public Integer ExistReport(int id, ArrayList<Integer> companys) {
+	public static boolean ExistReport(int id, ArrayList<Integer> companys) {
 //		boolean flag = false;
 		Integer re=null;
 		Connection con = null;
@@ -160,7 +159,7 @@ public class AnnualReportDao {
 				int company=rs.getInt("company_id");
 
 				if (companys.contains(company)) {
-					re=company;
+					return true;
 				}
 			}
 		} catch (SQLException e) {
@@ -169,7 +168,7 @@ public class AnnualReportDao {
 		} finally {
 			DbUtil.closeCurrentConnection();
 		}
-		return re;
+		return false;
 	}
 
 	public static void main(String[] args) {
@@ -184,10 +183,7 @@ public class AnnualReportDao {
 		con = DbUtil.getCurrentConnection();
 		PreparedStatement ps;
 		try {
-			// ps = con.prepareStatement("select id from company where cindustry
-			// in (3,7)");
-			// ps = con.prepareStatement("select id from company where
-			// z_bigclass in (3,7)");
+	
 			ps = con.prepareStatement("select title from reports where where id=?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
